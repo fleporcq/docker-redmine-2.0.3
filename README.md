@@ -17,11 +17,13 @@ le fichier `docker-compose.yml` va créer 3 conteneurs :
 Copier `docker-compose.yml.dist` vers `docker-compose.yml` et adapter les ports si nécessaire.
 (si le port 3000 est déjà utilisé sur votre machine remplacer `- 3000:3000` par `- 3001:3000`)
 
-Construire l'image docker ruby à partir du Dockerfile contenu dans ./docker/ruby et télécharger les image mysql et phpmyadmin depuis docker-hub :
+Construire l'image docker ruby à partir du Dockerfile contenu dans ./docker/ruby :
 
 ```bash
 docker-compose build
 ```
+
+La première command `docker-compose` run téléchargera les images Mysql et PHPMyAdmin
 
 ## Préparation de Redmine
 
@@ -29,39 +31,29 @@ Entrer en bash dans le conteneur application(construit à partir de l'image Ruby
 Le répertoire courant est `/redmine` qui est un volume monté à partir de `.`
 
 ```bash
-docker-compose run application bash
+docker-compose run --rm application bash
 ```
 
 Une fois dans le bash du conteneur application :
 
-- Installer les dépendances (gems) de Redmine avec bundler :
 ```bash
+# Installer les dépendances (gems) de Redmine avec bundler
+# les dépendances seront téléchargées dans `/usr/local/bundle` qui est un volume monté à partir de `./docker/ruby/bundle`
 bundle install
-```
-les dépendances seront téléchargées dans `/usr/local/bundle` qui est un volume monté à partir de `./docker/ruby/bundle`
-
-- Créer la base de données de Redmine
-```bash
+# Créer la base de données de Redmine
 rake db:create
-```
-- Créer les tables et données nécessaires à Redmine
-```bash
+# Créer les tables et données nécessaires à Redmine
 rake db:migrate
-```
-- Génerer le jeton secret utilisé par Rails pour encoder les cookies de session
-```bash
+# Génerer le jeton secret utilisé par Rails pour encoder les cookies de session
 rake generate_secret_token
-```
-
-- Une fois ces commandes passées dans le bash du conteneur, vous pouvez quitter
-```bash
+# Une fois ces commandes passées dans le bash du conteneur, vous pouvez quitter
 exit
 ```
 
 ## Lancement du serveur de développement WEBRick
 
 ```bash
-docker-compose run --service-ports application rails s
+docker-compose run --rm --service-ports application rails s
 ```
 
 Si vous n'avez pas changé les ports mapping dans docker-compose.yml :
@@ -70,12 +62,12 @@ Si vous n'avez pas changé les ports mapping dans docker-compose.yml :
 
 ## Divers
 
-Détruire les conteneurs :
+Stop et supprime tous les containers
 ```bash
 docker-compose down
 ```
 
 Détruire la base de données :
 ```bash
-docker-compose run application rake:db:drop
+docker-compose run --rm application rake:db:drop
 ```

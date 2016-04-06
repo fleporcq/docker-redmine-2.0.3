@@ -1,28 +1,31 @@
-application:
-    build: ./docker/ruby
-    volumes:
-        - ".:/redmine"
-        - "./docker/ruby/bundle:/usr/local/bundle"
-    ports:
-        - 3000:3000
-    links:
-        - database
-        - phpmyadmin
+version: '2'
+services:
+    application:
+        build: ./docker/ruby
+        image: ruby:1.9.3
+        volumes:
+            - ".:/redmine"
+            - "./docker/ruby/bundle:/usr/local/bundle"
+        ports:
+            - 3000:3000
+        links:
+            - database
+            - phpmyadmin
 
-database:
-    image: mysql:5.5
-    ports:
-        - 3306:3306
-    environment:
-        - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
-    volumes:
-        - ./docker/mysql/data:/var/lib/mysql
+    database:
+        image: mysql:5.5
+        ports:
+            - 3307:3306
+        environment:
+            - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+        volumes:
+            - ./docker/mysql/data:/var/lib/mysql
 
-phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    #environment:
-    # - PMA_HOST=database
-    ports:
-     - 8080:80
-    links:
-        - database
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+         - PMA_HOST=database
+        ports:
+         - 8080:80
+        links:
+            - database
