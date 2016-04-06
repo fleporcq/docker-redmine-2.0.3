@@ -7,6 +7,7 @@ application:
         - 3000:3000
     links:
         - database
+        - phpmyadmin
 
 database:
     image: mysql:5.5
@@ -19,8 +20,8 @@ database:
 
 phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    environment:
-     - PMA_HOST=database
+    #environment:
+    # - PMA_HOST=database
     ports:
      - 8080:80
     links:
