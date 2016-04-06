@@ -17,7 +17,12 @@ le fichier `docker-compose.yml` va créer 3 conteneurs :
 Copier `docker-compose.yml.dist` vers `docker-compose.yml` et adapter les ports si nécessaire.
 (si le port 3000 est déjà utilisé sur votre machine remplacer `- 3000:3000` par `- 3001:3000`)
 
-Construire l'image docker ruby à partir du Dockerfile contenu dans ./docker/ruby :
+Récupérer les trois images depuis docker-hub (mysql:5.5,phpmyadmin/phpmyadmin,fleporcq/ruby:1.9.3)
+```bash
+docker-compose pull
+```
+Si vous souhaitez ne pas puller l'image fleporcq/ruby:1.9.3,  
+vous pouvez la build : 
 
 ```bash
 docker-compose build
