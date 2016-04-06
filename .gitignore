@@ -1,0 +1,6 @@
+docker-compose.yml
+Gemfile.lock
+docker/ruby/bundle/*
+!docker/ruby/bundle/.gitkeep
+docker/mysql/data/*
+!docker/mysql/data/.gitkeep
