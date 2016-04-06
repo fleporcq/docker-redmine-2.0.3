@@ -4,3 +4,14 @@ docker/ruby/bundle/*
 !docker/ruby/bundle/.gitkeep
 docker/mysql/data/*
 !docker/mysql/data/.gitkeep
+log/*
+!log/.gitkeep
+tmp/*
+!tmp/cache
+!tmp/cache/.gitkeep
+!tmp/sessions
+!tmp/sessions/.gitkeep
+!tmp/sockets
+!tmp/sockets/.gitkeep
+!tmp/test
+!tmp/test/.gitkeep
