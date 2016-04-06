@@ -22,13 +22,11 @@ Récupérer les trois images depuis docker-hub (mysql:5.5,phpmyadmin/phpmyadmin,
 docker-compose pull
 ```
 Si vous souhaitez ne pas puller l'image fleporcq/ruby:1.9.3,  
-vous pouvez la build : 
+vous pouvez la build :
 
 ```bash
 docker-compose build
 ```
-
-La première command `docker-compose` run téléchargera les images Mysql et PHPMyAdmin
 
 ## Préparation de Redmine
 
