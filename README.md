@@ -74,3 +74,14 @@ Détruire la base de données :
 ```bash
 docker-compose run --rm application rake:db:drop
 ```
+
+## Windows
+```bash
+docker run --rm -it -v /:/redmine fleporcq/ruby:1.9.3 //bin/bash
+bundle install
+rake db:create
+rake db:migrate
+rake generate_secret_token
+exit
+docker-compose up
+```
