@@ -1,11 +1,11 @@
 version: '2'
 services:
     application:
-        build: ./docker/ruby
-        image: fleporcq/ruby:1.9.3
+        container_name: redmine_application
+        build: ./docker/redmine
         volumes:
             - ".:/redmine"
-            - "./docker/ruby/bundle:/usr/local/bundle"
+            - "./docker/redmine/bundle:/usr/local/bundle"
         ports:
             - 3000:3000
         links:
@@ -13,15 +13,17 @@ services:
             - phpmyadmin
 
     database:
+        container_name: redmine_database
         image: mysql:5.5
         ports:
-            - 3306:3306
+            - 3307:3306
         environment:
             - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
         volumes:
             - ./docker/mysql/data:/var/lib/mysql
 
     phpmyadmin:
+        container_name: redmine_phpmyadmin
         image: phpmyadmin/phpmyadmin
         environment:
          - PMA_HOST=database

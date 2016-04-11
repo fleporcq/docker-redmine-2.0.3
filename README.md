@@ -12,32 +12,25 @@ le fichier `docker-compose.yml` va créer 3 conteneurs :
 - Installer docker https://docs.docker.com/engine/installation/
 - Installer docker-compose https://docs.docker.com/compose/install/
 
+
 ## Préparation des images
 
 Copier `docker-compose.yml.dist` vers `docker-compose.yml` et adapter les ports si nécessaire.
 (si le port 3000 est déjà utilisé sur votre machine remplacer `- 3000:3000` par `- 3001:3000`)
 
-Récupérer les trois images depuis docker-hub (mysql:5.5,phpmyadmin/phpmyadmin,fleporcq/ruby:1.9.3)
+Lancer les conteneurs avec la commande
 ```bash
-docker-compose pull
+docker-compose up
 ```
-Si vous souhaitez ne pas puller l'image fleporcq/ruby:1.9.3,  
-vous pouvez la build :
+Si vous n'avez pas changé les ports mapping dans docker-compose.yml :
+- Redmine est disponible par défaut à l'adresse http://localhost:3000
+- PHPMyAdmin est disponible par défaut à l'adresse http://localhost:8080
+sauf si vous avez changé le port mapping dans docker-compose.yml
 
-```bash
-docker-compose build
-```
 
 ## Préparation de Redmine
 
-Entrer en bash dans le conteneur application(construit à partir de l'image Ruby)
-Le répertoire courant est `/redmine` qui est un volume monté à partir de `.`
-
-```bash
-docker-compose run --rm application bash
-```
-
-Une fois dans le bash du conteneur application :
+Au lancement du conteneur redmine_application le script ./docker/redmine/entry-point.sh est éxecuté.
 
 ```bash
 # Installer les dépendances (gems) de Redmine avec bundler
@@ -49,19 +42,10 @@ rake db:create
 rake db:migrate
 # Génerer le jeton secret utilisé par Rails pour encoder les cookies de session
 rake generate_secret_token
-# Une fois ces commandes passées dans le bash du conteneur, vous pouvez quitter
-exit
+# Lancer le serveur WEBRick
+rails s
 ```
 
-## Lancement du serveur de développement WEBRick
-
-```bash
-docker-compose run --rm --service-ports application rails s
-```
-
-Si vous n'avez pas changé les ports mapping dans docker-compose.yml :
-- Redmine est disponible par défaut à l'adresse http://localhost:3000 (sauf )
-- PHPMyAdmin est disponible par défaut à l'adresse http://localhost:8080 (sauf si vous avez changé le port mapping dans docker-compose.yml)
 
 ## Divers
 
@@ -70,18 +54,31 @@ Stop et supprime tous les containers
 docker-compose down
 ```
 
-Détruire la base de données :
+Entrer en bash sur le conteneur application :
 ```bash
-docker-compose run --rm application rake:db:drop
+docker exec -it redmine_application bash
 ```
 
-## Windows
+Détruire la base de données :
 ```bash
-docker run --rm -it -v /:/redmine fleporcq/ruby:1.9.3 //bin/bash
-bundle install
-rake db:create
-rake db:migrate
-rake generate_secret_token
-exit
-docker-compose up
+docker-compose exec redmine_application rake db:drop
+```
+
+Créer la base de données :
+```bash
+docker-compose exec redmine_application rake db:create
+```
+
+Créer les tables de redmine :
+```bash
+docker-compose exec redmine_application rake db:migrate
+```
+
+## Note
+L'image redmine hérite de l'image fleporcq/ruby:1.9.3.
+Si vous souhaitez recontruire l'image fleporcq/ruby:1.9.3,  
+vous pouvez la build :
+
+```bash
+docker build -t [tag] ./docker/ruby
 ```
